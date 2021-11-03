@@ -76,7 +76,10 @@ export default class Sketch {
       },
       vertexShader: vertex,
       fragmentShader: fragment,
-      side: THREE.DoubleSide 
+      side: THREE.DoubleSide,
+      transparent: true,
+      depthTest: false,
+      depthWrite: false,
 
     });
 
@@ -113,6 +116,7 @@ export default class Sketch {
     this.time += 1;
     // this.mesh.rotation.x = this.time / 200;
     // this.mesh.rotation.y = this.time / 100;
+    this.mesh.rotation.z = this.time / 100; 
 
 
 	  this.renderer.render( this.scene, this.camera );
