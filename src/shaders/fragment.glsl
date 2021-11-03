@@ -1,3 +1,8 @@
+varying vec2 vCoordinates; 
+uniform sampler2D imageGraphic; 
+  
 void main(){
-  gl_FragColor =  vec4(1., 0., 0., 1.);
+  vec2 myUV = vec2(vCoordinates.x/512., vCoordinates.y/512.);
+  vec4 image = texture2D(imageGraphic, myUV);
+  gl_FragColor = image;
 }
