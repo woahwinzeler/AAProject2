@@ -82,7 +82,21 @@ module.exports = {
                         }
                     }
                 ]
-            }
+            },
+            //GLSL
+            {
+              test: /\.glsl$/,
+              use: [
+                {
+                  loader: 'webpack-glsl-loader'
+
+                }
+
+
+
+
+              ]
+           }
         ]
     }
 }

@@ -2,79 +2,15 @@ import './style.css'
 import * as THREE from 'three'
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js'
 import * as dat from 'dat.gui'
-
-
-// // Materials
-
-// const material = new THREE.MeshBasicMaterial()
-// material.color = new THREE.Color(0xff0000)
-
-
-
-// // Lights
-
-// const pointLight = new THREE.PointLight(0xffffff, 0.1)
-// pointLight.position.x = 2
-// pointLight.position.y = 3
-// pointLight.position.z = 4
-// scene.add(pointLight)
-
-// /**
-//  * Sizes
-//  */
-// const sizes = {
-//     width: window.innerWidth,
-//     height: window.innerHeight
-// }
-
-
-
-/**
- * Camera
- */
-// Base camera
-
-
-// Controls
-// const controls = new OrbitControls(camera, canvas)
-// controls.enableDamping = true
-
-/**
- * Renderer
- */
-
-
-/**
- * Animate
- */
-
-// const clock = new THREE.Clock()
-
-// const tick = () =>
-// {
-
-//     const elapsedTime = clock.getElapsedTime()
-
-//     // Update objects
-//     sphere.rotation.y = .5 * elapsedTime
-
-//     // Update Orbital Controls
-//     // controls.update()
-
-//     // Render
-//     renderer.render(scene, camera)
-
-//     // Call tick again on the next frame
-// //     window.requestAnimationFrame(tick)
-// // }
-
-// tick()
-
+import fragment from './shaders/fragment.glsl'
+import vertex from './shaders/vertex.glsl'
+import { Uniform } from 'three'
 
 
 export default class Sketch {
   constructor(){
 
+    //SETS SIZES SO WE HAVE REFRENCE 
     this.sizes = {
           width: window.innerWidth,
           height: window.innerHeight
@@ -108,16 +44,16 @@ export default class Sketch {
     window.addEventListener('resize', () =>
     {
       // Update sizes
-      sizes.width = window.innerWidth
-      sizes.height = window.innerHeight
+      this.sizes.width = window.innerWidth
+      this.sizes.height = window.innerHeight
 
       // Update camera
-      camera.aspect = sizes.width / sizes.height
-      camera.updateProjectionMatrix()
+      this.camera.aspect = this.sizes.width / this.sizes.height
+      this.camera.updateProjectionMatrix()
 
       // Update renderer
-      renderer.setSize(sizes.width, sizes.height)
-      renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2))
+      this.renderer.setSize(this.sizes.width, this.sizes.height)
+      this.renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2))
     })  
 
     //render meshed objects
@@ -127,16 +63,25 @@ export default class Sketch {
   }
   
   addMesh(){
-    this.geometry = new THREE.TorusGeometry( .7, .2, 16, 100 );
-    this.material = new THREE.MeshNormalMaterial();
-    this.mesh = new THREE.Mesh( this.geometry, this.material );
+    this.geometry = new THREE.PlaneBufferGeometry( 1, 1 );
+    this.material = new THREE.MeshNormalMaterial({side: THREE.DoubleSide});
+    this.material = new THREE.ShaderMaterial({
+      uniforms:{
+        progress: {type: "f", value: 0}
+      },
+      vertexShader: vertex,
+      fragmentShader: fragment,
+      side: THREE.DoubleSide 
+
+    });
+    this.mesh = new THREE.Points( this.geometry, this.material );
     this.scene.add(this.mesh);
   }
 
   render(){
     this.time += 1;
-    this.mesh.rotation.x = this.time / 2000;
-    this.mesh.rotation.y = this.time / 1000;
+    this.mesh.rotation.x = this.time / 200;
+    this.mesh.rotation.y = this.time / 100;
 
 
 	  this.renderer.render( this.scene, this.camera );
