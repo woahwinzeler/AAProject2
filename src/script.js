@@ -28,7 +28,7 @@ export default class Sketch {
     this.renderer.setSize(this.sizes.width, this.sizes.height)
     this.renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2))
 
-    //OVERLAY IMAGE 
+    //IMAGE 
     this.textures = [
       new THREE.TextureLoader().load(imageGraphic)
     ]
@@ -44,9 +44,10 @@ export default class Sketch {
     //ADDING CAMERA TO SCENE 
     this.scene.add(this.camera);
 
+    //USER CONTROLS
     this.controls = new OrbitControls(this.camera, this.renderer.domElement);
 
-    //ADJUSTS window, render, and sizes, 
+    //ADJUSTS window, render, and sizes
     window.addEventListener('resize', () =>
     {
       // Update sizes
@@ -68,7 +69,7 @@ export default class Sketch {
     this.render();
   }
   
-  addMesh(){
+  addMesh(offset=0){
     this.material = new THREE.ShaderMaterial({
       uniforms:{
         progress: {type: "f", value: 0},
@@ -92,9 +93,9 @@ export default class Sketch {
     //SET POSITION OF PARTICLES 
     let index = 0;
     for (let i = 0; i < 512; i++) {
-      let xPos = i - 256;
+      let xPos = i - 256 + offset;
       for (let j = 0; j < 512; j++) {
-        let yPos = j - 256;
+        let yPos = j - 256 + offset;
         this.positions.setXYZ(index, xPos, yPos, 0);
         //OVERLAY TEXTURES
         this.coordinates.setXYZ(index, i, j, 0);
@@ -106,7 +107,7 @@ export default class Sketch {
 
     this.geometry.setAttribute("position", this.positions)
     this.geometry.setAttribute("aCoordinates", this.coordinates)
-    console.log(this.positions);
+    // console.log(this.positions);
     
     this.mesh = new THREE.Points( this.geometry, this.material );
     this.scene.add(this.mesh);
@@ -116,7 +117,7 @@ export default class Sketch {
     this.time += 1;
     // this.mesh.rotation.x = this.time / 200;
     // this.mesh.rotation.y = this.time / 100;
-    this.mesh.rotation.z = this.time / 100; 
+    this.mesh.rotation.z = this.time / 1000; 
 
 
 	  this.renderer.render( this.scene, this.camera );
@@ -127,4 +128,12 @@ export default class Sketch {
   }
 }
 
-new Sketch(); 
+document.addEventListener('keyup', event => {
+  if (event.code === 'Space') {
+    new Sketch(); 
+  } else if (event.code === '0x001C') {
+    //enter is key code
+    element = document.getElementById('canavs').remove();
+    console.log("enter")
+  }
+});
