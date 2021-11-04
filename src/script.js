@@ -6,6 +6,7 @@ import fragment from './shaders/fragment.glsl'
 import vertex from './shaders/vertex.glsl'
 import { Uniform } from 'three'
 import imageGraphic from '../static/img/ALEXSGRAPHIC.png'
+import paintingGraphic from '../static/img/Painting.png'
 
 
 export default class Sketch {
@@ -29,8 +30,10 @@ export default class Sketch {
     this.renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2))
 
     //IMAGE 
+    //todo: add image
     this.textures = [
-      new THREE.TextureLoader().load(imageGraphic)
+      new THREE.TextureLoader().load(imageGraphic),
+      new THREE.TextureLoader().load(paintingGraphic)
     ]
    
 
@@ -64,12 +67,46 @@ export default class Sketch {
     })  
 
     //render meshed objects
-    this.addMesh();
+    // this.addPaintingMesh();
     this.time = 0; 
+
+    //window.requestAnimationFrame runs in here, allowing for rotation
+    //this is also where we handle any re-renders
+    this.step = 1000;
+    this.addMesh();
     this.render();
+
+    this.paintingRendered = false;
+    this.wheelRendered = true;
+
+    //toggles between renderings 
+    window.addEventListener('keydown', (e) =>{
+        if (e.code === 'ArrowUp' && !this.paintingRendered){
+
+          //Rendering
+          this.removeMesh();
+          this.addPaintingMesh();
+
+          //toggles
+          this.paintingRendered = true;
+          this.wheelRendered = false;
+        } else if (e.code === 'ArrowDown' && !this.wheelRendered){
+
+          //Rendering
+          this.removePaintingMesh();
+          this.addMesh();
+
+          //Toggles 
+          this.wheelRendered = true;
+          this.paintingRendered = false;
+        }
+      });
   }
   
+  //Wheel Mesh
   addMesh(offset=0){
+
+    //MATERIAL 
     this.material = new THREE.ShaderMaterial({
       uniforms:{
         progress: {type: "f", value: 0},
@@ -84,7 +121,9 @@ export default class Sketch {
 
     });
 
-    this.geometry = new THREE.BufferGeometry()
+    //The code from here to line 117 can be done more simply if you don't use glsl 
+
+    this.geometry = new THREE.BufferGeometry();
 
     let particles = 512**2; 
     this.positions = new THREE.BufferAttribute(new Float32Array(particles * 3), 3);
@@ -107,33 +146,52 @@ export default class Sketch {
 
     this.geometry.setAttribute("position", this.positions)
     this.geometry.setAttribute("aCoordinates", this.coordinates)
-    // console.log(this.positions);
     
     this.mesh = new THREE.Points( this.geometry, this.material );
     this.scene.add(this.mesh);
+    this.mesh.position.z += offset;
+    // this.mesh.position.x += offset;
+    // this.mesh.position.y += offset;
   }
+
+  //Remove Wheel Mesh
+  removeMesh(){
+    this.geometry.dispose();
+    this.material.dispose();
+    this.scene.remove(this.mesh);
+    // this.mesh.dispose(this.mesh);
+  }
+
+  removePaintingMesh(){
+    this.PaintingGeometry.dispose();
+    this.PaintingMaterial.dispose();
+    this.scene.remove(this.PaintingMesh);
+  }
+
+  addPaintingMesh(){
+    this.PaintingMaterial = new THREE.MeshBasicMaterial({
+      map: this.textures[1],
+      side: THREE.DoubleSide
+    });
+    this.PaintingGeometry = new THREE.PlaneBufferGeometry(1250, 1000);
+
+    this.PaintingMesh = new THREE.Mesh(this.PaintingGeometry, this.PaintingMaterial);
+
+    this.scene.add(this.PaintingMesh);
+
+    // this.PaintingMesh.position.z = 1000;
+  }
+
 
   render(){
     this.time += 1;
-    // this.mesh.rotation.x = this.time / 200;
-    // this.mesh.rotation.y = this.time / 100;
-    this.mesh.rotation.z = this.time / 1000; 
 
+    this.mesh.rotation.z = this.time / this.step; 
 
 	  this.renderer.render( this.scene, this.camera );
 
-  
-    // console.log(this.time);
-    window.requestAnimationFrame(this.render.bind(this))
+    this.requestId = window.requestAnimationFrame(this.render.bind(this));
   }
 }
 
-document.addEventListener('keyup', event => {
-  if (event.code === 'Space') {
-    new Sketch(); 
-  } else if (event.code === '0x001C') {
-    //enter is key code
-    element = document.getElementById('canavs').remove();
-    console.log("enter")
-  }
-});
+new Sketch(); 
