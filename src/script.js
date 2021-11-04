@@ -80,28 +80,40 @@ export default class Sketch {
     this.render();
 
     this.paintingRendered = false;
-    this.wheelRendered = true;
 
     //toggles between renderings 
     window.addEventListener('keydown', (e) =>{
-        if (e.code === 'ArrowUp' && !this.paintingRendered){
+        if (e.code === 'ArrowUp'){
+          if(!this.paintingRendered){
+            //Rendering
+            this.removeMesh();
+            this.addPaintingMesh();
 
-          //Rendering
-          this.removeMesh();
-          this.addPaintingMesh();
+            //toggles
+            this.paintingRendered = true;
+          } else {
+             //Rendering
+              this.removePaintingMesh();
+              this.addMesh();
 
-          //toggles
-          this.paintingRendered = true;
-          this.wheelRendered = false;
-        } else if (e.code === 'ArrowDown' && !this.wheelRendered){
+              this.paintingRendered = false;
+          }
 
-          //Rendering
-          this.removePaintingMesh();
-          this.addMesh();
+        } else if (e.code === 'ArrowDown'){
+          if (this.paintingRendered){
+            //Rendering
+            this.removePaintingMesh();
+            this.addMesh();
 
-          //Toggles 
-          this.wheelRendered = true;
-          this.paintingRendered = false;
+            this.paintingRendered = false;
+          } else {
+            //Rendering
+            this.removeMesh();
+            this.addPaintingMesh();
+
+            this.paintingRendered = true;
+          }
+
         }
       });
   }
