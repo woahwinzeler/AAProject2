@@ -7,6 +7,8 @@ import vertex from './shaders/vertex.glsl'
 import { Uniform } from 'three'
 import imageGraphic from '../static/img/ALEXSGRAPHIC.png'
 import paintingGraphic from '../static/img/Painting.png'
+import purplePaintingGraphic from '../static/img/PurplePainting.png'
+
 
 
 export default class Sketch {
@@ -30,10 +32,11 @@ export default class Sketch {
     this.renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2))
 
     //IMAGE 
-    //todo: add image
+
     this.textures = [
       new THREE.TextureLoader().load(imageGraphic),
-      new THREE.TextureLoader().load(paintingGraphic)
+      new THREE.TextureLoader().load(paintingGraphic),
+      new THREE.TextureLoader().load(purplePaintingGraphic)
     ]
    
 
@@ -164,20 +167,24 @@ export default class Sketch {
 
   removePaintingMesh(){
     this.PaintingGeometry.dispose();
-    this.PaintingMaterial.dispose();
+    this.PaintingMaterial[0].dispose();
+    this.PaintingMaterial[1].dispose();
+    
     this.scene.remove(this.PaintingMesh);
+    this.scene.remove(this.PaintingMeshBack);
   }
 
   addPaintingMesh(){
-    this.PaintingMaterial = new THREE.MeshBasicMaterial({
-      map: this.textures[1],
-      side: THREE.DoubleSide
-    });
+    this.PaintingMaterial= [new THREE.MeshBasicMaterial({map: this.textures[1], side: THREE.FrontSide, transparent: true}), 
+    new THREE.MeshBasicMaterial({map: this.textures[2], side: THREE.BackSide, transparent: true})]
+    
     this.PaintingGeometry = new THREE.PlaneBufferGeometry(1250, 1000);
 
-    this.PaintingMesh = new THREE.Mesh(this.PaintingGeometry, this.PaintingMaterial);
+    this.PaintingMesh = new THREE.Mesh(this.PaintingGeometry, this.PaintingMaterial[0]);
+    this.PaintingMeshBack = new THREE.Mesh(this.PaintingGeometry, this.PaintingMaterial[1]);
 
     this.scene.add(this.PaintingMesh);
+    this.scene.add(this.PaintingMeshBack);
 
     // this.PaintingMesh.position.z = 1000;
   }
