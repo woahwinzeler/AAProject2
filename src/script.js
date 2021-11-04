@@ -162,7 +162,6 @@ export default class Sketch {
     this.geometry.dispose();
     this.material.dispose();
     this.scene.remove(this.mesh);
-    // this.mesh.dispose(this.mesh);
   }
 
   removePaintingMesh(){
@@ -185,8 +184,6 @@ export default class Sketch {
 
     this.scene.add(this.PaintingMesh);
     this.scene.add(this.PaintingMeshBack);
-
-    // this.PaintingMesh.position.z = 1000;
   }
 
 
