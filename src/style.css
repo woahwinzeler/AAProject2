@@ -20,8 +20,9 @@ body
 }
 
 a {
+  display: absolute;
   font-family: Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif;
-  z-index: -2;
+  z-index: 3;
   color: rgb(185, 184, 184);
   font-size: 20;
 }
