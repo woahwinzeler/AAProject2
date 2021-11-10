@@ -80,6 +80,7 @@ export default class Sketch {
     this.render();
 
     this.paintingRendered = false;
+    this.ringRendered = false; 
 
     //toggles between renderings 
     window.addEventListener('keydown', (e) =>{
@@ -114,8 +115,47 @@ export default class Sketch {
             this.paintingRendered = true;
           }
 
+        } else if (e.code === "KeyA"){
+          console.log("Key A pressed");
+          if (!this.paintingRendered){
+            if(!this.ringRendered){
+              this.addRingMesh()
+
+              this.ringRendered = true;
+            } else {
+              this.removeRingMesh()
+
+              this.ringRendered = false;
+            }
+          }
         }
       });
+  }
+
+  addRingMesh(){
+    //todo: add and read emissive map
+    //Do we need to add a light?
+    this.RingMaterial = new THREE.MeshPhongMaterial({
+      color: new THREE.Color( 'rgb(191, 196, 128)' ), 
+      reflectivity: 0.9, 
+      shininess: 50, 
+      depthWrite: true, 
+      depthTest: true,
+      side: THREE.DoubleSide
+    });
+
+
+    //Turn into torus buffer?
+    this.RingGeometry = new THREE.TorusGeometry();
+
+    this.RingMesh = new THREE.Mesh(this.RingGeometry, this.RingMaterial);
+
+    this.scene.add(this.RingMesh);
+
+  }
+
+  removeRingMesh(){
+
   }
   
   //Wheel Mesh
@@ -208,6 +248,8 @@ export default class Sketch {
 
     this.requestId = window.requestAnimationFrame(this.render.bind(this));
   }
+
+  //TODO: Add Stop render functions, add render for torus, DRY up code, espically around toggles
 }
 
 new Sketch(); 
