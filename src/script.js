@@ -1,10 +1,8 @@
 import './style.css'
 import * as THREE from 'three'
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js'
-import * as dat from 'dat.gui'
 import fragment from './shaders/fragment.glsl'
 import vertex from './shaders/vertex.glsl'
-import { Uniform } from 'three'
 import imageGraphic from '../static/img/ALEXSGRAPHIC.png'
 import paintingGraphic from '../static/img/Painting.png'
 import purplePaintingGraphic from '../static/img/PurplePainting.png'
@@ -53,7 +51,7 @@ export default class Sketch {
     //USER CONTROLS
     this.controls = new OrbitControls(this.camera, this.renderer.domElement);
 
-    //ADJUSTS window, render, and sizes
+    //ADJUSTS window, render, and sizes 
     window.addEventListener('resize', () =>
     {
       // Update sizes
@@ -73,11 +71,38 @@ export default class Sketch {
     // this.addPaintingMesh();
     this.time = 0; 
 
+    const loader = new THREE.FontLoader();
+
+    loader.load( '/fonts/gentilis_bold.typeface.json', function ( font ) {
+
+    this.textgeometry = new THREE.TextGeometry( 'Hello three.js!', {
+        font: font,
+        size: 80,
+        height: 5,
+        curveSegments: 12,
+        bevelEnabled: true,
+        bevelThickness: 10,
+        bevelSize: 8,
+        bevelOffset: 0,
+        bevelSegments: 5
+      } );
+    } );
+
+    var textMaterial = new THREE.MeshPhongMaterial( { color: 0xff0000 } );
+
+    var mesh = new THREE.Mesh( this.textgeometry, textMaterial );
+    mesh.position.set( 100, 100, 100 );
+
+    this.scene.add( mesh );
+
+
+
     //window.requestAnimationFrame runs in here, allowing for rotation
     //this is also where we handle any re-renders
     this.step = 1000;
     this.addMesh();
     this.render();
+
 
     this.paintingRendered = false;
 
@@ -114,6 +139,12 @@ export default class Sketch {
             this.paintingRendered = true;
           }
 
+        } else if (e.code === 'ArrowLeft'){
+          this.step += 50;
+        } else if (e.code === 'ArrowRight'){
+          this.step -= 50; 
+        } else {
+          console.log(e.code)
         }
       });
   }
@@ -163,6 +194,7 @@ export default class Sketch {
     this.geometry.setAttribute("aCoordinates", this.coordinates)
     
     this.mesh = new THREE.Points( this.geometry, this.material );
+    this.mesh.callback = function() { console.log( this.name ); }
     this.scene.add(this.mesh);
     this.mesh.position.z += offset;
     // this.mesh.position.x += offset;

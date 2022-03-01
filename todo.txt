@@ -1,0 +1,7 @@
+
+Add instrucitons to render on entry
+Add an apply to be an artist page
+Add artists index, onClick displays a drop down of their work
+On click displays said work
+Artists can upload a 2d or 3d file to display 
+An
