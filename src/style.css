@@ -35,3 +35,28 @@ a {
 	display:block;
   color: white;
 }
+
+.hidden{
+  display: none;
+}
+
+#text{
+  padding-top: 8vh;
+  margin-top: 3vh;
+}
+
+#modal {
+  margin-top: 200px;
+  margin: auto;
+  display: center; 
+  background-color: white;
+  color: black;
+  height: 50vh; 
+  width: 50vw;
+  z-index: 1000000; 
+  border-radius: 8%; 
+}
+
+#close{
+  margin-top: 3vh;
+}

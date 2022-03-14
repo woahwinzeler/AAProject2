@@ -26,5 +26,20 @@ a {
   font-size: 20;
 }
 
+.hidden{
+  display: none;
+}
+
+#modal {
+  margin: auto;
+  display: center; 
+  background-color: white;
+  color: black;
+  height: 50vh; 
+  width: 50vw;
+  z-index: 1000000; 
+  border-radius: 8%; 
+}
+
 
 /*# sourceMappingURL=main.css.map*/
