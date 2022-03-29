@@ -9,7 +9,7 @@ import purplePaintingGraphic from '../static/img/PurplePainting.png'
 
 
 
-export default class Sketch {
+class Sketch {
   constructor(){
 
     //SETS SIZES SO WE  HAVE REFRENCE 
