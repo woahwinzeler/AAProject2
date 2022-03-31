@@ -6,6 +6,7 @@ import vertex from './shaders/vertex.glsl'
 import imageGraphic from '../static/img/ALEXSGRAPHIC.png'
 import paintingGraphic from '../static/img/Painting.png'
 import purplePaintingGraphic from '../static/img/PurplePainting.png'
+import './style.css'
 
 
 
